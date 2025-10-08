@@ -1,0 +1,157 @@
+%YAML:1.0 # need to specify the file type at the top!
+
+verbosity: "INFO" # ALL, DEBUG, INFO, WARNING, ERROR, SILENT
+
+use_fej: true # if first-estimate Jacobians should be used (enable for good consistency)
+integration: "rk4" # discrete, rk4, analytical (if rk4 or analytical used then analytical covariance propagation is used)
+use_stereo: true # if we have more than 1 camera, if we should try to track stereo constraints
+max_cameras: 2 # how many cameras we have 1 = mono, 2 = stereo, >2 = binocular (all mono tracking)
+
+use_imuavg: true
+use_rk4int: true
+
+calib_cam_extrinsics: true
+calib_cam_intrinsics: true
+calib_cam_timeoffset: true
+calib_imu_intrinsics: false
+calib_imu_g_sensitivity: false
+
+max_clones: 11
+max_slam: 50
+max_slam_in_update: 25
+max_msckf_in_update: 40
+dt_slam_delay: 2
+
+gravity_mag: 9.80766
+
+feat_rep_msckf: "GLOBAL_3D"
+feat_rep_slam: "ANCHORED_MSCKF_INVERSE_DEPTH"
+feat_rep_aruco: "ANCHORED_MSCKF_INVERSE_DEPTH"
+
+# zero velocity update parameters we can use
+# we support either IMU-based or disparity detection.
+try_zupt: true
+zupt_chi2_multipler: 0 # set to 0 for only disp-based
+zupt_max_velocity: 0.1
+zupt_noise_multiplier: 50
+zupt_max_disparity: 2.0 # set to 0 for only imu-based
+zupt_only_at_beginning: true
+
+# ==================================================================
+# ==================================================================
+
+init_window_time: 1.5 # make 2sec if using dynamic...
+init_imu_thresh: 2.0 # room1-5:0.45, room6:0.25
+init_max_disparity: -2.0
+init_max_features: 200
+init_window_offset: 0.01
+init_grav_opt_max_iter: 100
+init_grav_opt_init_lambda: 100 # this is helpful for the first few iterations
+init_grav_opt_converge_thres: 1e-6
+init_grav_opt_lambda_decay: 0.2
+init_grav_min_feat: 10
+
+
+# initial prior
+init_prior_q: 0.1
+init_prior_p: 0.0
+init_prior_v: 1.0
+init_prior_bg: 0.01
+init_prior_ba: 0.05
+
+init_prior_t: 0.001
+init_prior_qc: 0.001
+init_prior_pc: 0.001
+init_prior_fc: 0.1
+init_prior_dc1: 1e-4
+init_prior_dc2: 1e-4
+
+init_use_fej: false
+init_max_reproj: 3.0 # 2.0 for stereo
+init_dyn_mle_max_iter: 10
+init_ba_dx_converge_thres: 1e-6
+init_ba_res_converge_thres: 1e-4
+init_min_feat: 20 # 30 for stereo
+init_max_feat: 50
+init_ba_huber_th: 1.0
+init_max_slam: 50
+
+step_debug: false
+optimizer_debug: false
+eigenvector_debug: false
+residual_debug: false
+dof: 1
+
+# init logger
+record_init_pose: true
+record_init_timing: true
+init_poses_log_file_path: /tmp/init_window_poses.txt
+init_metadata_log_file_path: /tmp/init_window_timing.txt
+
+use_bg_estimator: false # if we should estimate the gyroscope bias
+init_dyn_use: true # if dynamic initialization should be used
+init_dyn_num_pose: 5 # number of poses to use within our window time
+init_dyn_min_deg: -1 # orientation change needed to try to init
+
+init_dyn_bias_g: [ 0.0, 0.0, 0.0 ] # initial gyroscope bias guess
+init_dyn_bias_a: [ 0.0, 0.0, 0.0 ] # initial accelerometer bias guess
+
+
+# ==================================================================
+# ==================================================================
+
+record_timing_information: false
+record_timing_filepath: "/tmp/traj_timing.txt"
+
+save_total_state: false
+filepath_est: "/tmp/ov_estimate.txt"
+filepath_std: "/tmp/ov_estimate_std.txt"
+filepath_gt: "/tmp/ov_groundtruth.txt"
+
+# ==================================================================
+# ==================================================================
+
+# our front-end feature tracking parameters
+# we have a KLT and descriptor based (KLT is better implemented...)
+use_klt: true # if true we will use KLT, otherwise use a ORB descriptor + robust matching
+num_pts: 200 # number of points (per camera) we will extract and try to track
+fast_threshold: 20 # threshold for fast extraction (warning: lower threshs can be expensive)
+grid_x: 5 # extraction sub-grid count for horizontal direction (uniform tracking)
+grid_y: 5 # extraction sub-grid count for vertical direction (uniform tracking)
+min_px_dist: 10 # distance between features (features near each other provide less information)
+ransac_th: 0.5 # ransac threshold for the essential matrix
+knn_ratio: 0.70 # descriptor knn threshold for the top two descriptor matches
+track_frequency: 21.0 # frequency we will perform feature tracking at (in frames per second / hertz)
+downsample_cameras: false # will downsample image in half if true
+num_opencv_threads: 1 # -1: auto, 0-1: serial, >1: number of threads
+histogram_method: "HISTOGRAM" # NONE, HISTOGRAM, CLAHE
+
+# aruco tag tracker for the system
+# DICT_6X6_1000 from https://chev.me/arucogen/
+use_aruco: false
+num_aruco: 1024
+downsize_aruco: true
+
+# ==================================================================
+# ==================================================================
+
+# camera noises and chi-squared threshold multipliers
+up_msckf_sigma_px: 1
+up_msckf_chi2_multipler: 1
+up_slam_sigma_px: 1
+up_slam_chi2_multipler: 1
+up_aruco_sigma_px: 1
+up_aruco_chi2_multipler: 1
+
+# masks for our images
+use_mask: true
+mask0: "mask_tumvi0.png" #relative to current file
+mask1: "mask_tumvi1.png" #relative to current file
+
+# imu and camera spacial-temporal
+# imu config should also have the correct noise values
+relative_config_imu: "kalibr_imu_chain.yaml"
+relative_config_imucam: "kalibr_imucam_chain.yaml"
+
+
+

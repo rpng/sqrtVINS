@@ -1,0 +1,108 @@
+<launch>
+
+    <!-- what config we are going to run (should match folder name) -->
+    <arg name="verbosity"   default="INFO" /> <!-- ALL, DEBUG, INFO, WARNING, ERROR, SILENT -->
+    <arg name="config"      default="euroc_mav" /> <!-- euroc_mav, tum_vi, rpng_aruco -->
+    <arg name="config_path" default="$(find ov_srvins)/../config/$(arg config)/estimator_config.yaml" />
+
+    <!-- mono or stereo and what ros bag to play -->
+    <arg name="seed"        default="1" />
+    <arg name="max_cameras" default="2" />
+    <arg name="use_stereo"  default="true" />
+    <arg name="bag_start"   default="0.0" /> <!-- v1-2: 0, mh1: 40, mh2: 35, mh3: 17.5, mh4-5: 15 -->
+    <arg name="bag_durr"    default="-1" />  
+    <arg name="dataset"     default="V1_01_easy" /> <!-- V1_01_easy, V1_02_medium, V2_02_medium, V2_03_difficult,MH_04_difficult, dataset-room1_512_16 -->
+    <arg name="bag"         default="$(env HOME)/datasets/$(arg config)/$(arg dataset).bag" />
+
+    <!-- saving trajectory path and timing information -->
+    <arg name="dosave"      default="true" />
+    <arg name="dotime"      default="true" />
+    <arg name="path_est"    default="/tmp/traj_estimate.txt" />
+    <arg name="path_time"   default="/tmp/traj_timing.txt" />
+
+    <!-- init window pose and timing information -->
+    <arg name="record_init_pose"            default="false" />
+    <arg name="record_init_timing"          default="false" />
+    <arg name="init_poses_log_file_path"    default="/tmp/init_window_poses.txt" />
+    <arg name="init_metadata_log_file_path" default="/tmp/init_window_timing.txt" />
+
+    <!-- if we should viz the groundtruth -->
+    <arg name="dolivetraj"  default="true" />
+    <arg name="path_gt"     default="$(find ov_data)/$(arg config)/$(arg dataset).txt" />
+
+
+    <arg name="num_kf"       default="5"/>
+    <arg name="do_bg"        default="false" />
+    <arg name="win_time"     default="2.0" />
+    
+    <arg name="use_fej"           default="true" />
+    <arg name="init_num_iter"     default="10" />
+
+    <arg name="init_max_feat"     default="50" /> 
+    <arg name="init_max_slam"     default="50" /> 
+    <arg name="init_feat_num"     default="200" />  <!-- 200 for stereo -->
+
+    <!-- parameters for multi-thread Montel Carlo -->
+    <arg name="node_name"   default="ov_srvins" />
+
+    <!-- MASTER NODE! -->
+    <!-- <node name="ros1_serial_msckf" pkg="ov_srvins" type="ros1_serial_msckf" output="screen" clear_params="true" required="true" launch-prefix="gdb -ex run &#45;&#45;args">  -->
+    <node name="$(arg node_name)" pkg="ov_srvins" type="ros1_serial_msckf" output="screen" clear_params="true" required="true">
+        <!-- add randomness -->
+        <param name="seed"                    type="int"    value="$(arg seed)" />
+
+        <!-- bag parameters -->
+        <param name="path_bag"                 type="str"    value="$(arg bag)" />
+        <param name="bag_start"                type="double" value="$(arg bag_start)" />
+        <param name="bag_durr"                 type="double" value="$(arg bag_durr)" />
+
+        <!-- master configuration object -->
+        <param name="verbosity"                 type="str"    value="$(arg verbosity)" />
+        <param name="config_path"               type="str"    value="$(arg config_path)" />
+
+        <!-- world/filter parameters -->
+        <param name="use_stereo"                type="bool"   value="$(arg use_stereo)" />
+        <param name="max_cameras"               type="int"    value="$(arg max_cameras)" />
+
+        <!-- timing statistics recording -->
+        <param name="record_timing_information" type="bool"   value="$(arg dotime)" />
+        <param name="record_timing_filepath"    type="str"    value="$(arg path_time)" />
+
+
+        <param name="init_dyn_num_pose"          type="int"    value="$(arg num_kf)" />
+        <param name="use_bg_estimator"           type="bool"   value="$(arg do_bg)" />
+        <param name="init_window_time"           type="double" value="$(arg win_time)" />
+
+        <param name="use_fej"                  type="bool"  value="$(arg use_fej)" />
+        <param name="init_dyn_mle_max_iter"    type="int"   value="$(arg init_num_iter)" />
+        <param name="init_max_features"        type="int"   value="$(arg init_feat_num)" />
+        <param name="init_max_slam"            type="int"   value="$(arg init_max_slam)" />
+        <param name="init_max_feat"            type="int"   value="$(arg init_max_feat)" />
+
+        <!-- init window pose and timing information -->
+        <param name="record_init_pose"            type="bool"   value="$(arg record_init_pose)" />
+        <param name="record_init_timing"          type="bool"   value="$(arg record_init_timing)" />
+        <param name="init_poses_log_file_path"    type="str"    value="$(arg init_poses_log_file_path)" />
+        <param name="init_metadata_log_file_path" type="str"    value="$(arg init_metadata_log_file_path)" />
+    </node>
+
+    <!-- record the trajectory if enabled -->
+    <group if="$(arg dosave)">
+        <node name="recorder_estimate_$(arg node_name)" pkg="ov_eval" type="pose_to_file" output="screen" required="true">
+            <param name="topic"      type="str" value="/$(arg node_name)/poseimu" />
+            <param name="topic_type" type="str" value="PoseWithCovarianceStamped" />
+            <param name="output"     type="str" value="$(arg path_est)" />
+        </node>
+    </group>
+
+    <!-- path viz of aligned gt -->
+    <group if="$(arg dolivetraj)">
+        <node name="live_align_trajectory_$(arg node_name)" pkg="ov_eval" type="live_align_trajectory" output="screen" required="true">
+            <param name="alignment_type" type="str" value="posyaw" />
+            <param name="path_gt"        type="str" value="$(arg path_gt)" />
+            <param name="sub_topic"      type="str" value="/$(arg node_name)/pathimu" />
+        </node>
+    </group>
+
+
+</launch>

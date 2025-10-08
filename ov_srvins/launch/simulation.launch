@@ -1,0 +1,113 @@
+<launch>
+
+
+    <!-- ================================================================ -->
+    <!-- ================================================================ -->
+
+    <!-- what config we are going to run (should match folder name) -->
+    <arg name="verbosity"   default="ALL" /> <!-- ALL, DEBUG, INFO, WARNING, ERROR, SILENT -->
+    <arg name="config"      default="rpng_sim" />
+    <arg name="config_path" default="$(find ov_srvins)/../config/$(arg config)/estimator_config.yaml" />
+
+    <!-- simulation parameters we can vary with our scripts ANCHORED_MSCKF_INVERSE_DEPTH -->
+    <arg name="seed"        default="7" />
+    <arg name="fej"         default="true" />
+    <arg name="feat_rep"    default="ANCHORED_MSCKF_INVERSE_DEPTH" />
+    <arg name="num_clones"  default="11" />
+    <arg name="num_slam"    default="50" />
+    <arg name="num_pts"     default="1000" />
+    <arg name="max_cameras" default="1" />
+
+    <arg name="freq_cam"    default="10" />
+    <arg name="freq_imu"    default="400" />
+
+    <arg name="dataset"    default="udel_gore.txt" /> <!-- udel_gore, udel_gore_zupt, tum_corridor1_512_16_okvis, udel_arl -->
+
+    <!-- if we should perturb the initial state values (i.e. calibration) -->
+    <arg name="sim_do_perturbation" default="false" />
+    <arg name="sim_do_calibration"  default="false" />
+
+    <!-- parameters for multi-thread Montel Carlo -->
+    <arg name="node_name"   default="ov_srvins" />
+
+
+
+    <!-- saving trajectory paths -->
+    <arg name="dosave_pose"     default="true" />
+    <arg name="path_est"        default="/tmp/traj_estimate.txt" />
+    <arg name="path_gt"         default="/tmp/traj_groundtruth.txt" />
+    <arg name="dosave_state"    default="true" />
+    <arg name="path_state_est"  default="$(find ov_eval)/data/sim/state_estimate.txt" />
+    <arg name="path_state_std"  default="$(find ov_eval)/data/sim/state_deviation.txt" />
+    <arg name="path_state_gt"   default="$(find ov_eval)/data/sim/state_groundtruth.txt" />
+
+
+    <!-- ================================================================ -->
+    <!-- ================================================================ -->
+
+
+    <!-- MASTER NODE! -->
+    <node name="$(arg node_name)" pkg="ov_srvins" type="run_simulation" output="screen" clear_params="true" required="true">
+   <!-- <node name="ov_srvins" pkg="ov_srvins" type="run_simulation" output="screen" clear_params="true" required="true" launch-prefix="gdb -ex run &#45;&#45;args"> -->
+
+        <!-- =============================================== -->
+        <!-- SIMULATION PARAMETERS -->
+        <!-- =============================================== -->
+
+<!--         <param name="sim_traj_path"          type="str"    value="/home/yuxiang/datasets/ltss_dataset/ltss_dataset/groundtruth/ltss_color/d455_room_03.txt" /> -->
+        <param name="sim_traj_path"          type="str"    value="$(find ov_data)/sim/$(arg dataset)" />
+        <param name="sim_seed_state_init"    type="int"    value="0" />
+        <param name="sim_seed_measurements"  type="int"    value="$(arg seed)" />
+        <param name="sim_seed_preturb"       type="int"    value="$(arg seed)" />
+        <param name="sim_freq_cam"           type="int"    value="$(arg freq_cam)" />
+        <param name="sim_freq_imu"           type="int"    value="$(arg freq_imu)" />
+        <param name="sim_do_perturbation"    type="bool"   value="$(arg sim_do_perturbation)" />
+
+        <param name="save_total_state"       type="bool"   value="$(arg dosave_state)" />
+        <param name="filepath_est"           type="str"    value="$(arg path_state_est)" />
+        <param name="filepath_std"           type="str"    value="$(arg path_state_std)" />
+        <param name="filepath_gt"            type="str"    value="$(arg path_state_gt)" />
+
+        <!-- =============================================== -->
+        <!-- =============================================== -->
+
+        <!-- master configuration object -->
+        <param name="verbosity"              type="str"    value="$(arg verbosity)" />
+        <param name="config_path"            type="str"    value="$(arg config_path)" />
+        <param name="num_opencv_threads"     type="int"    value="0" />
+
+        <!-- world/filter parameters -->
+        <param name="use_fej"                type="bool"   value="$(arg fej)" />
+        <param name="calib_cam_extrinsics"   type="bool"   value="$(arg sim_do_calibration)" />
+        <param name="calib_cam_intrinsics"   type="bool"   value="$(arg sim_do_calibration)" />
+        <param name="calib_cam_timeoffset"   type="bool"   value="$(arg sim_do_calibration)" />
+
+        <param name="max_clones"             type="int"    value="$(arg num_clones)" />
+        <param name="max_slam"               type="int"    value="$(arg num_slam)" />
+        <param name="max_cameras"            type="int"    value="$(arg max_cameras)" />
+        <param name="feat_rep_msckf"         type="str"    value="$(arg feat_rep)" />
+        <param name="feat_rep_slam"          type="str"    value="$(arg feat_rep)" />
+        <param name="feat_rep_aruco"         type="str"    value="$(arg feat_rep)" />
+
+        <!-- tracker/extractor properties -->
+        <param name="num_pts"                type="int"    value="$(arg num_pts)" />
+
+    </node>
+
+
+    <!-- record the trajectory if enabled -->
+    <group if="$(arg dosave_pose)">
+            <node name="recorder_estimate_$(arg node_name)" pkg="ov_eval" type="pose_to_file" output="screen">
+                <param name="topic"      type="str" value="/$(arg node_name)/poseimu" />
+                <param name="topic_type" type="str" value="PoseWithCovarianceStamped" />
+                <param name="output"     type="str" value="$(arg path_est)" />
+            </node>
+            <node name="recorder_groundtruth_$(arg node_name)" pkg="ov_eval" type="pose_to_file" output="screen">
+                <param name="topic"      type="str" value="/$(arg node_name)/posegt" />
+                <param name="topic_type" type="str" value="PoseStamped" />
+                <param name="output"     type="str" value="$(arg path_gt)" />
+            </node>
+    </group>
+
+
+</launch>

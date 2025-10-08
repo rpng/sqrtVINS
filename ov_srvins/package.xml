@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<package format="3">
+
+    <!-- Package Information -->
+    <name>ov_srvins</name>
+    <version>2.6.0</version>
+    <description>
+        Implementation of a Square-root Visual-inertial Navigation System (SR-VINS).
+    </description>
+
+    <!-- Code Authors -->
+    <author email="yxpeng@udel.edu">Yuxiang Peng</author>
+    <author email="pgeneva@udel.edu">Patrick Geneva</author>
+    <author email="keck@udel.edu">Kevin Eckenhoff</author>
+    <author email="ghuang@udel.edu">Guoquan Huang</author>
+    <maintainer email="yxpeng@udel.edu">Yuxiang Peng</maintainer>
+
+    <!-- Licensing -->
+    <license>GNU General Public License v3.0</license>
+
+    <!-- ROS1: Dependencies needed to compile this package. -->
+    <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
+    <depend condition="$ROS_VERSION == 1">cmake_modules</depend>
+    <depend condition="$ROS_VERSION == 1">roscpp</depend>
+    <depend condition="$ROS_VERSION == 1">rosbag</depend>
+    <depend condition="$ROS_VERSION == 1">tf</depend>
+    <depend condition="$ROS_VERSION == 1">std_msgs</depend>
+    <depend condition="$ROS_VERSION == 1">sensor_msgs</depend>
+    <depend condition="$ROS_VERSION == 1">geometry_msgs</depend>
+    <depend condition="$ROS_VERSION == 1">nav_msgs</depend>
+    <depend condition="$ROS_VERSION == 1">visualization_msgs</depend>
+    <depend condition="$ROS_VERSION == 1">image_transport</depend>
+    <depend condition="$ROS_VERSION == 1">cv_bridge</depend>
+    <depend condition="$ROS_VERSION == 1">ov_core</depend>
+
+    <!-- ROS2: Dependencies needed to compile this package. -->
+    <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake</buildtool_depend>
+    <depend condition="$ROS_VERSION == 2">rclcpp</depend>
+    <depend condition="$ROS_VERSION == 2">tf2_ros</depend>
+    <depend condition="$ROS_VERSION == 2">tf2_geometry_msgs</depend>
+    <depend condition="$ROS_VERSION == 2">std_msgs</depend>
+    <depend condition="$ROS_VERSION == 2">geometry_msgs</depend>
+    <depend condition="$ROS_VERSION == 2">sensor_msgs</depend>
+    <depend condition="$ROS_VERSION == 2">nav_msgs</depend>
+    <depend condition="$ROS_VERSION == 2">cv_bridge</depend>
+    <depend condition="$ROS_VERSION == 2">image_transport</depend>
+    <depend condition="$ROS_VERSION == 2">ov_core</depend>
+    <!-- <depend condition="$ROS_VERSION == 2">ov_init</depend> -->
+
+    <!-- System dependencies for both versions -->
+    <depend>eigen</depend>
+    <depend>libopencv-dev</depend>
+    <depend>libopencv-contrib-dev</depend>
+    <depend>boost</depend>
+    <depend>libceres-dev</depend>
+
+    <!-- Note the export is required to expose the executables -->
+    <export>
+        <build_type condition="$ROS_VERSION == 1">catkin</build_type>
+        <build_type condition="$ROS_VERSION == 2">ament_cmake</build_type>
+        <rosdoc config="rosdoc.yaml" />
+    </export>
+
+    <!-- These are really "soft" dependencies, and are just required if you need them for launch... -->
+    <!--    <depend condition="$ROS_VERSION == 1">ov_eval</depend>-->
+    <!--    <depend condition="$ROS_VERSION == 1">ov_data</depend>-->
+    <!--    <depend condition="$ROS_VERSION == 2">ov_eval</depend>-->
+    <!--    <depend condition="$ROS_VERSION == 2">ov_data</depend>-->
+
+</package>
