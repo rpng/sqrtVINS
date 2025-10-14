@@ -4,9 +4,10 @@
 [![ROS 2 Workflow](https://github.com/rpng/open_vins/actions/workflows/build_ros2.yml/badge.svg)](https://github.com/rpng/open_vins/actions/workflows/build_ros2.yml)
 [![ROS Free Workflow](https://github.com/rpng/open_vins/actions/workflows/build.yml/badge.svg)](https://github.com/rpng/open_vins/actions/workflows/build.yml)
 
-Welcome to the ${\sqrt{VINS}}$ project! This repository provides the first open-source implementation of a robust and efficient square-root filter (SRF)-based visual-inertial navigation system (VINS). Extended from [OpenVINS](https://github.com/rpng/open_vins), unlike conventional EKF- or MSCKF-based systems, ${\sqrt{VINS}}$ leverages a novel LLT-based SRF update to preserve the triangular structure of the covariance matrix, ensuring numerical stability, guaranteed positive semi-definiteness, and efficient memory usage. This makes it especially well-suited for embedded robotic platforms and systems constrained by limited precision.
+Welcome to the ${\sqrt{\rm VINS}}$ project! This repository provides the first open-source implementation of a robust and efficient square-root filter (SRF)-based visual-inertial navigation system (VINS), see [arXiv](https://arxiv.org/abs/2510.10346). 
+Extended from [OpenVINS](https://github.com/rpng/open_vins), unlike conventional EKF- or MSCKF-based systems, ${\sqrt{\rm VINS}}$ leverages a novel LLT-based SRF update to preserve the triangular structure of the covariance matrix, ensuring numerical stability, guaranteed positive semi-definiteness, and efficient memory usage. This makes it especially well-suited for embedded robotic platforms and systems constrained by limited precision.
 
-Key highlights of ${\sqrt{VINS}}$ include:
+Key highlights of ${\sqrt{\rm VINS}}$ include:
 
 ⚡ Ultra-fast and stable filtering – runs efficiently wih 32-bit single-precision on embedded hardware (e.g., Jetson Nano in 5W mode with single thread (<1 GHz CPU)).
 
