@@ -4,6 +4,10 @@
 [![ROS 2 Workflow](https://github.com/rpng/open_vins/actions/workflows/build_ros2.yml/badge.svg)](https://github.com/rpng/open_vins/actions/workflows/build_ros2.yml)
 [![ROS Free Workflow](https://github.com/rpng/open_vins/actions/workflows/build.yml/badge.svg)](https://github.com/rpng/open_vins/actions/workflows/build.yml)
 
+<p align="center">
+  <img src="ov_srvins/demo/Peng2025TRO.gif" alt="VINS Motion Tracking Demo" width="480"/>
+</p>
+
 Welcome to the ${\sqrt{\rm VINS}}$ project! This repository provides the first open-source implementation of a robust and efficient square-root filter (SRF)-based visual-inertial navigation system (VINS), see [arXiv](https://arxiv.org/abs/2510.10346). 
 Extended from [OpenVINS](https://github.com/rpng/open_vins), unlike conventional EKF- or MSCKF-based systems, ${\sqrt{\rm VINS}}$ leverages a novel LLT-based SRF update to preserve the triangular structure of the covariance matrix, ensuring numerical stability, guaranteed positive semi-definiteness, and efficient memory usage. This makes it especially well-suited for embedded robotic platforms and systems constrained by limited precision.
 
