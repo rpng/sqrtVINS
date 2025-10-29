@@ -70,8 +70,8 @@ following:
   author    = {Peng, Yuxiang and Chen, Chuchu and Wu, Kejian and Huang, Guoquan},
   journal   = {IEEE Transactions on Robotics (TRO)},
   year      = {2025},
-  month     = {sep},
-  note      = {(to appear)},
+  month     = {oct},
+  url = {https://ieeexplore.ieee.org/document/11219345}
 }
 ```
 
