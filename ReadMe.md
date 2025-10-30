@@ -19,7 +19,8 @@ Key highlights of ${\sqrt{\rm VINS}}$ include:
 
 🚀 Dynamic initialization – recovers minimal states without triangulating 3D features, enabling reliable startup even in extreme conditions (as small as a 100 ms time window).
 
-## Dependence
+
+## Dependences
 * ROS
 * Eigen
 * OpenCV
@@ -61,24 +62,19 @@ following:
   booktitle = {International Conference on Robotics and Automation (ICRA)},
   year      = {2024},
   address   = {Yokohama, Japan},
-  month     = {may},
+  month     = {may}
 }
-```
-```txt
+
 @Article{Peng2025TRO,
   title     = {sqrt-VINS: Robust and Ultrafast Square-Root Filter-based 3D Motion Tracking},
   author    = {Peng, Yuxiang and Chen, Chuchu and Wu, Kejian and Huang, Guoquan},
   journal   = {IEEE Transactions on Robotics (TRO)},
   year      = {2025},
   month     = {oct},
-  url = {https://ieeexplore.ieee.org/document/11219345}
+  url       = {https://ieeexplore.ieee.org/document/11219345}
 }
 ```
 
-The codebase is licensed under the [GNU Lesser General Public License v3 (LGPL-3.0)](https://www.gnu.org/licenses/lgpl-3.0.txt).  
-You must preserve the copyright and license notices in your derivative work.  
-If you modify the library itself, you must make those modifications available under the same license.  
-You may link this library into your own programs (including proprietary software), provided that users are able to replace or relink with a modified version of the library.  
-([See this](https://choosealicense.com/licenses/lgpl-3.0/); this is not legal advice.)
+The codebase is licensed under the [GNU Lesser General Public License v3 (LGPL-3.0)](https://www.gnu.org/licenses/lgpl-3.0.txt). You must preserve the copyright and license notices in your derivative work. If you modify the library itself, you must make those modifications available under the same license. You may link this library into your own programs (including proprietary software), provided that users are able to replace or relink with a modified version of the library. ([See this](https://choosealicense.com/licenses/lgpl-3.0/); this is not legal advice.)
 
 
